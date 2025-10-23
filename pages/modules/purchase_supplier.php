@@ -1,0 +1,37 @@
+<?php
+require_once '../../includes/config.php';
+require_once '../../includes/header.php';
+
+$moduleTitle = 'Purchase & Supplier Management';
+$moduleDesc = 'Suppliers, purchase orders, GRN, supplier payments';
+$moduleIconClass = 'fa-solid fa-truck-field';
+?>
+
+<div class="grid grid-cols-1 gap-6 mb-8">
+    <div class="card">
+        <div class="card-header">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600">
+                    <i class="<?php echo $moduleIconClass; ?>"></i>
+                </div>
+                <div>
+                    <h5 class="text-lg font-semibold mb-0"><?php echo htmlspecialchars($moduleTitle); ?></h5>
+                    <p class="text-sm text-gray-600"><?php echo htmlspecialchars($moduleDesc); ?></p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-4 flex flex-wrap gap-2">
+                <a href="/inventory/pages/modules/purchase_orders.php" class="px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-sm">Purchase Orders</a>
+                <a href="/inventory/pages/modules/grn.php" class="px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-sm">GRN</a>
+                <a href="/inventory/pages/modules/supplier_payments.php" class="px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-sm">Supplier Payments</a>
+                <a href="/inventory/pages/purchases.php" class="px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 text-sm">Purchases</a>
+            </div>
+            <p class="text-gray-700">This is a template page for <?php echo htmlspecialchars($moduleTitle); ?>. Customize layout, forms, and reports as needed.</p>
+        </div>
+    </div>
+</div>
+
+<?php require_once '../../includes/footer.php'; ?>
+
+

@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # PHP Application
+  app:
+    build: .
+    container_name: inventory_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./uploads:/var/www/html/uploads
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=inventory_user
+      - DB_PASS=inventory_password
+      - DB_NAME=inventory_system
+    networks:
+      - inventory_network
+    restart: unless-stopped
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: inventory_db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=inventory_system
+      - MYSQL_USER=inventory_user
+      - MYSQL_PASSWORD=inventory_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    networks:
+      - inventory_network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+
+  # phpMyAdmin (optional, for database management)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: inventory_phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=inventory_user
+      - PMA_PASSWORD=inventory_password
+      - PMA_DB=inventory_system
+    depends_on:
+      - db
+    networks:
+      - inventory_network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  inventory_network:
+    driver: bridge

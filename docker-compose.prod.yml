@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: inventory_app_prod
+    ports:
+      - "80:80"
+    volumes:
+      - ./uploads:/var/www/html/uploads
+      - ./logs:/var/log/apache2
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_USER=inventory_user
+      - DB_PASS=inventory_password
+      - DB_NAME=inventory_system
+    networks:
+      - inventory_network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  db:
+    image: mysql:8.0
+    container_name: inventory_db_prod
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=inventory_system
+      - MYSQL_USER=inventory_user
+      - MYSQL_PASSWORD=inventory_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database.sql:/docker-entrypoint-initdb.d/database.sql
+    networks:
+      - inventory_network
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+
+volumes:
+  mysql_data:
+
+networks:
+  inventory_network:
+    driver: bridge

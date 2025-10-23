@@ -1,0 +1,75 @@
+ Docker Configuration Files Created:
+Core Docker Files:
+Dockerfile - Main PHP 8.2 + Apache image with necessary extensions
+Dockerfile.dev - Development version with Xdebug for debugging
+docker-compose.yml - Main orchestration file for all services
+docker-compose.dev.yml - Development environment configuration
+docker-compose.prod.yml - Production environment configuration
+docker-compose.override.yml - Development overrides
+
+
+Supporting Files:
+.dockerignore - Excludes unnecessary files from Docker build
+Makefile - Simplifies common Docker operations
+start.bat - Windows batch file for easy startup
+env.example - Environment variables template
+README_Docker.md - Comprehensive Docker documentation
+
+
+🚀 Quick Start:
+1. Start Development Environment:  docker-compose -f docker-compose.dev.yml up -d  --build
+2. Start Production Environment:   docker-compose -f docker-compose.prod.yml up -d --build
+3. Start Default Environment:  docker-compose up -d --build
+
+If the above dont work, try the following:
+              docker-compose build --no-cache
+              docker-compose up -d
+
+
+🌐 Access Points:
+Main App: http://localhost:8080
+phpMyAdmin: http://localhost:8081
+Database: localhost:3306
+phpMyAdmin: http://localhost:8081 (username: inventory_user, password: inventory_password)
+
+
+
+�� Key Features:
+Multi-Environment Support:
+Development: Includes Xdebug, development tools, live code editing
+Production: Optimized for performance, resource limits, security
+Default: Balanced configuration for general use
+
+Database Integration:
+MySQL 8.0 with automatic schema initialization
+Persistent data storage with Docker volumes
+phpMyAdmin for database management
+
+Development Workflow:
+Live code editing (no rebuilds needed)
+Xdebug debugging support
+Comprehensive logging
+Easy container management
+
+Windows Support:
+start.bat script for easy startup
+PowerShell-compatible commands
+Windows-specific path handling
+
+�� Next Steps:
+Install Docker Desktop if you haven't already
+Copy env.example to .env and customize if needed
+Run start.bat or use the command line
+Access your application at http://localhost:8080
+🛠️ Useful Commands:
+# View logs
+docker-compose logs -f
+
+# Access container shell
+docker exec -it inventory_app bash
+
+# Stop containers
+docker-compose down
+
+# Rebuild after changes
+docker-compose build --no-cache
