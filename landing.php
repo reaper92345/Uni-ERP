@@ -26,7 +26,11 @@ require_once 'includes/header.php';
                     <?php if (!empty($_SESSION['user']['picture'])): ?>
                         <img src="<?php echo htmlspecialchars($_SESSION['user']['picture']); ?>" alt="avatar" class="user-avatar" />
                     <?php endif; ?>
-                    <span class="user-name"><?php echo htmlspecialchars($_SESSION['user']['name'] ?? $_SESSION['user']['email']); ?></span>
+                    <span class="user-name">
+                        <?= htmlspecialchars(($_SESSION['user']['name'] ?? $_SESSION['user']['email'] ?? 'Guest')) ?>
+                    </span>
+
+
                     <a href="api/logout.php" class="logout-btn">Logout</a>
                 </div>
             <?php endif; ?>

@@ -8,14 +8,6 @@ This project is a simple inventory, sales, and purchasing web application built 
 - Be easy to start locally using Docker
 
 ---
-<img width="1920" height="911" alt="chrome_BkLlJbTap7" src="https://github.com/user-attachments/assets/f0a820f2-460a-47c1-8bd1-cc8e74331271" />
-<img width="1546" height="767" alt="chrome_dOLbFV26bU" src="https://github.com/user-attachments/assets/bc13c89b-d6a3-4009-b6fa-9505459413c2" />
-<img width="1920" height="911" alt="chrome_TIznbheg0l" src="https://github.com/user-attachments/assets/829af763-0d77-42b4-890b-3f629e315b38" />
-<img width="1920" height="911" alt="chrome_Wicp7Ml3og" src="https://github.com/user-attachments/assets/ec207a6d-5dbb-49d1-880d-13d17601ad9a" />
-
-<img width="1920" height="911" alt="chrome_ia2RDuVFBz" src="https://github.com/user-attachments/assets/c6707db1-ff36-40bf-9a1d-4d3ae2080191" />
-
-
 
 ## Features
 - PHP 8.2 with Apache
@@ -175,6 +167,5 @@ This project is shared for learning purposes. You can modify it freely for your 
 
 ## Credits
 Made with PHP, MySQL, and Docker. Structured to be easy for students to understand and extend.
-
 
 
