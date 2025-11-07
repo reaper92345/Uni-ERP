@@ -9,7 +9,7 @@ if (ini_get("session.use_cookies")) {
     );
 }
 session_destroy();
-header('Location: /inventory/');
+header('Location: ' . getBasePath() . '/erp-auth/login.php');
 exit;
 
 

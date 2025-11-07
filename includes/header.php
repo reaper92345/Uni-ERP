@@ -9,6 +9,7 @@ $publicPaths = [
     $base . '/erp-auth/register.php',
     $base . '/erp-auth/process-login.php',
     $base . '/erp-auth/process-register.php',
+    $base . '/landing.php',
     $base . '/api/auth-google.php',
     $base . '/api/auth-google-callback.php',
     $base . '/assets/css/style.css',
