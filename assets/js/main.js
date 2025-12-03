@@ -1,5 +1,5 @@
 // Initialize charts when the document is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Initialize sales vs expenses chart if we're on the dashboard
     const salesExpensesChart = document.getElementById('salesExpensesChart');
     if (salesExpensesChart) {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to initialize the sales vs expenses chart
 function initializeSalesExpensesChart() {
     console.log('Starting chart initialization...');
-    
+
     // Use relative path instead of absolute
     fetch('charts/sales_vs_expenses.php')
         .then(response => {
@@ -23,20 +23,20 @@ function initializeSalesExpensesChart() {
         })
         .then(data => {
             console.log('Chart data received:', data);
-            
+
             // Check if canvas exists
             const canvas = document.getElementById('salesExpensesChart');
             if (!canvas) {
                 throw new Error('Canvas element not found');
             }
             console.log('Canvas found:', canvas);
-            
+
             const ctx = canvas.getContext('2d');
             if (!ctx) {
                 throw new Error('Could not get canvas context');
             }
             console.log('Canvas context obtained');
-            
+
             // Create chart container if it doesn't exist
             let chartContainer = document.querySelector('.chart-container');
             if (!chartContainer) {
@@ -63,59 +63,104 @@ function initializeSalesExpensesChart() {
                 window.salesExpensesChartInstance.destroy();
             }
 
+            // Helper to create gradient
+            function createGradient(ctx, color) {
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, color.replace(')', ', 0.4)').replace('rgb', 'rgba'));
+                gradient.addColorStop(1, color.replace(')', ', 0.0)').replace('rgb', 'rgba'));
+                return gradient;
+            }
+
             // Initialize chart with monetary data
             let currentView = 'monetary';
             console.log('Creating new chart instance with monetary data');
+
+            // Define colors
+            const salesColor = 'rgb(59, 130, 246)'; // Blue
+            const expensesColor = 'rgb(239, 68, 68)'; // Red
+
+            // Prepare datasets with Ubiquiti styling
+            const styleDataset = (dataset, color) => ({
+                ...dataset,
+                borderColor: color,
+                backgroundColor: createGradient(ctx, color),
+                borderWidth: 2,
+                tension: 0.4, // Smooth curves
+                fill: true,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                pointBackgroundColor: color,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            });
+
+            // Apply styling to initial data
+            const styledMonetaryDatasets = data.monetaryData.datasets.map((ds, i) =>
+                styleDataset(ds, i === 0 ? salesColor : expensesColor)
+            );
+
             window.salesExpensesChartInstance = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: data.labels,
-                    datasets: data.monetaryData.datasets
+                    datasets: styledMonetaryDatasets
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Amount ($)'
+                            grid: {
+                                color: 'rgba(200, 200, 200, 0.1)',
+                                drawBorder: false,
                             },
                             ticks: {
-                                callback: function(value) {
+                                color: '#6c757d',
+                                callback: function (value) {
                                     return '$' + value.toLocaleString();
                                 }
                             }
                         },
                         x: {
-                            title: {
-                                display: true,
-                                text: 'Month'
+                            grid: {
+                                display: false,
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: '#6c757d'
                             }
                         }
                     },
                     plugins: {
                         legend: {
                             position: 'top',
+                            align: 'end',
                             labels: {
-                                boxWidth: 20,
-                                padding: 15
+                                usePointStyle: true,
+                                boxWidth: 8,
+                                padding: 20,
+                                color: '#6c757d'
                             }
                         },
                         tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1f2937',
+                            bodyColor: '#4b5563',
+                            borderColor: '#e5e7eb',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
                             callbacks: {
-                                label: function(context) {
-                                    return context.dataset.label + ': $' + 
-                                           context.raw.toLocaleString();
+                                label: function (context) {
+                                    return context.dataset.label + ': $' +
+                                        context.raw.toLocaleString();
                                 }
-                            }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Monthly Sales vs Expenses',
-                            font: {
-                                size: 16
                             }
                         }
                     }
@@ -123,32 +168,34 @@ function initializeSalesExpensesChart() {
             });
 
             // Add toggle functionality
-            toggleButton.onclick = function() {
+            toggleButton.onclick = function () {
                 console.log('Toggle button clicked, current view:', currentView);
                 if (currentView === 'monetary') {
                     console.log('Switching to quantity view');
-                    window.salesExpensesChartInstance.data.datasets = data.quantityData.datasets;
-                    window.salesExpensesChartInstance.options.scales.y.title.text = 'Quantity';
-                    window.salesExpensesChartInstance.options.scales.y.ticks.callback = function(value) {
+
+                    // Style quantity datasets
+                    const styledQuantityDatasets = data.quantityData.datasets.map((ds, i) =>
+                        styleDataset(ds, i === 0 ? salesColor : expensesColor)
+                    );
+
+                    window.salesExpensesChartInstance.data.datasets = styledQuantityDatasets;
+                    window.salesExpensesChartInstance.options.scales.y.ticks.callback = function (value) {
                         return value.toLocaleString();
                     };
-                    window.salesExpensesChartInstance.options.plugins.tooltip.callbacks.label = function(context) {
+                    window.salesExpensesChartInstance.options.plugins.tooltip.callbacks.label = function (context) {
                         return context.dataset.label + ': ' + context.raw.toLocaleString();
                     };
-                    window.salesExpensesChartInstance.options.plugins.title.text = 'Monthly Commodity Quantities';
                     toggleButton.textContent = 'Switch to Monetary View';
                     currentView = 'quantity';
                 } else {
                     console.log('Switching to monetary view');
-                    window.salesExpensesChartInstance.data.datasets = data.monetaryData.datasets;
-                    window.salesExpensesChartInstance.options.scales.y.title.text = 'Amount ($)';
-                    window.salesExpensesChartInstance.options.scales.y.ticks.callback = function(value) {
+                    window.salesExpensesChartInstance.data.datasets = styledMonetaryDatasets;
+                    window.salesExpensesChartInstance.options.scales.y.ticks.callback = function (value) {
                         return '$' + value.toLocaleString();
                     };
-                    window.salesExpensesChartInstance.options.plugins.tooltip.callbacks.label = function(context) {
+                    window.salesExpensesChartInstance.options.plugins.tooltip.callbacks.label = function (context) {
                         return context.dataset.label + ': $' + context.raw.toLocaleString();
                     };
-                    window.salesExpensesChartInstance.options.plugins.title.text = 'Monthly Sales vs Expenses';
                     toggleButton.textContent = 'Switch to Quantity View';
                     currentView = 'monetary';
                 }
@@ -180,15 +227,15 @@ function deleteRecord(url, id, redirectUrl) {
         fetch(url + '?id=' + id, {
             method: 'DELETE'
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = redirectUrl;
-            } else {
-                alert('Error: ' + data.message);
-            }
-        })
-        .catch(error => console.error('Error:', error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = redirectUrl;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
     }
 }
 
@@ -210,16 +257,16 @@ function updateStock(productId) {
         },
         body: 'product_id=' + productId + '&quantity=' + quantity
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            document.getElementById('current_stock_' + productId).textContent = data.new_stock;
-            alert('Stock updated successfully!');
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => console.error('Error:', error));
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('current_stock_' + productId).textContent = data.new_stock;
+                alert('Stock updated successfully!');
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Function to load expense categories
@@ -234,4 +281,4 @@ function loadExpenseCategories() {
             });
         })
         .catch(error => console.error('Error loading categories:', error));
-} 
+}

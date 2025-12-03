@@ -5,14 +5,14 @@ require_once '../includes/header.php';
 $conn = getDBConnection();
 $message = '';
 
-// Handle form submission
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = (int)$_POST['product_id'];
     $quantity = (int)$_POST['quantity'];
     $amount = (float)$_POST['amount'];
     $date = formatDate($_POST['date']);
     
-    // Check if there's enough stock
+ 
     $currentStock = getCurrentStock($product_id);
     if ($currentStock >= $quantity) {
         $sql = "INSERT INTO sales (product_id, quantity, amount, date) VALUES (?, ?, ?, ?)";
@@ -29,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Get all products for dropdown
 $products = array();
 $sql = "SELECT id, name, unit FROM products ORDER BY name ASC";
 $result = $conn->query($sql);
@@ -38,7 +37,6 @@ while ($row = $result->fetch_assoc()) {
 }
 ?>
 
-<!-- Sales Management Section -->
 <section class="modules-section">
     <div class="section-header">
         <h2 class="section-title">Sales Management</h2>
